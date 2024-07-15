@@ -1,0 +1,12 @@
+#Install Minikube cluster on Windows through Command Line
+winget install Kubernetes.minikube
+
+#Start your cluster through docker
+#Takes time as necessary images and dependcies are installed
+minikube start --driver docker
+minikube status
+
+#Minikube runs either on container or virtual machine - so need to have either Docker runtime software or VM
+#Minikube has docker preinstalled to run containers in cluser
+#Therefore there are 2 layers of Dockers - 1. Minikube runs as docker container; 2. Docker inside Minikube to run our application container
+

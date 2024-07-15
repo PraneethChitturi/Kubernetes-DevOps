@@ -1,0 +1,40 @@
+#Kubernetes
+#Step 1
+#On Master and Worked Node
+sudo apt-get update -y
+sudo apt-get install docker.io -y
+sudo service docker restart
+
+sudo apt-get update
+# apt-transport-https may be a dummy package; if so, you can skip that package
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+sudo systemctl enable --now kubelet
+
+#Step2:
+#On Master Node: #Defines cidr network range for kubernetes cluster
+kubeadm init --pod-network-cidr=192.168.0.0/16
+#Above outputs token to make any VM consider as Worker node
+
+#Step3:
+#On Master Node:
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+#Step4
+#On Master Node:
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.49.0/deploy/static/provider/baremetal/deploy.yaml
+
+#Which urlhost+post kubernetes cluster is on
+cat /root/.kube/config
+#Kubernetes cluster -> https://172.31.0.139:6443
+
+
+

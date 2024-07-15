@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: mongo-pv
+spec:
+ capacity:
+  storage: 1Gi
+ accessModes:
+  - ReadWriteOnce
+ persistentVolumeReclaimPolicy: Retain
+ hostPath:
+  path: /home/ubuntu/mongo/mongo-vol
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: mongo-pvc
+spec:
+ accessModes:
+  - ReadWriteOnce
+ resources:
+  requests:
+   storage: 1Gi
+
+
+
+#Create directory to be used for storage - 
+cd /home/ubuntu
+mkdir mongo
+cd mongo/
+mkdir mongo-vol
+
+#Create Deployment folder and create yaml config file in it
+mkdir Dep
+cd Dep/
+vi pv-pvc.yaml
+#Copy and paste above into yaml file
+#before running apply check if yaml syntax is correct in online yaml lint resource
+kubectl apply -f pv-pvc.yaml
+#This creates persistent vol
+
+#Can also check other statuses
+kubectl get secrets
+kubectl get pv
+kubectl get pvc
+kubectl get pods
+kubectl get svc #From here get the nodeport to access
+
+#Debug - check logs
+kubectl get pods
+kubectl logs {pods_name}
